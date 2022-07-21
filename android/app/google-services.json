@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "818236591954",
+    "project_id": "gphone-896d2",
+    "storage_bucket": "gphone-896d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818236591954:android:f71664e7ec2f088709f48b",
+        "android_client_info": {
+          "package_name": "com.example.gphone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818236591954-cuncdios5kn12553qobn80gtdbq4c1a9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gphone",
+            "certificate_hash": "9137cc62b22fad7e17adae04d7ab381f21ac8acc"
+          }
+        },
+        {
+          "client_id": "818236591954-24kb48d81bh8vu5vfs2uvpl04e46spgh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5M3t4a12zbAwBtFv2Nen8Tl_rRDTN7a8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818236591954-24kb48d81bh8vu5vfs2uvpl04e46spgh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
