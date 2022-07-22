@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gphone/src/screens/auth_choice_screen.dart';
@@ -7,13 +7,16 @@ import 'package:gphone/src/screens/home_screen.dart';
 
 class AuthService {
   static Widget handleAuthState() {
-    return StreamBuilder(builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return const HomeScreen();
-      } else {
-        return const AuthChoiceScreen();
-      }
-    });
+    return StreamBuilder(
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return const HomeScreen();
+        } else {
+          return const AuthChoiceScreen();
+        }
+      },
+      stream: FirebaseAuth.instance.authStateChanges(),
+    );
   }
 
   static Future<UserCredential> signInWithGoogle() async {
@@ -50,5 +53,27 @@ class AuthService {
 
   static Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  static Future<void> signInWithCredential(
+      String email, String password) async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseException {
+      rethrow;
+    }
+  }
+
+  static Future<void> signUpWithCredential(
+      String email, String password) async {
+    try {
+      UserCredential credantials = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: email.trim(), password: password.trim());
+      signInWithCredential(email, password);
+    } on FirebaseAuthException {
+      rethrow;
+    }
   }
 }

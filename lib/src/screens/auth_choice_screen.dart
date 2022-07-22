@@ -14,130 +14,121 @@ class AuthChoiceScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset('assets/illustrations/authentication.svg',
-                  width: MediaQuery.of(context).size.width * 0.35),
-              const SizedBox(height: 20),
-              Text(
-                "Let's you in",
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              const SizedBox(height: 20),
-              CustomOutlinedButton(
-                  width: double.maxFinite,
-                  children: [
-                    const Icon(FontAwesomeIcons.facebook,
-                        color: Colors.blue, size: 25),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Continue with Facebook",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                  onPressed: () {
-                    AuthService.signInWithFacebook();
-                  }),
-              const SizedBox(height: 15),
-              CustomOutlinedButton(
-                  width: double.maxFinite,
-                  children: [
-                    // const Icon(FontAwesomeIcons.google, color: Colors.red),
-                    SvgPicture.asset('assets/icons/google.svg', width: 25),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Continue with Google",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    )
-                  ],
-                  onPressed: () async {
-                    await AuthService.signInWithGoogle();
-                  }),
-              const SizedBox(height: 15),
-              CustomOutlinedButton(
-                  width: double.maxFinite,
-                  children: [
-                    SvgPicture.asset('assets/icons/microsoft.svg', width: 25),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Continue with Microsoft",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                  onPressed: () {}),
-              const SizedBox(height: 25),
-              Row(
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
                 children: [
-                  const Expanded(
-                    child: Divider(
-                      height: 1,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
+                  SvgPicture.asset('assets/illustrations/authentication.svg',
+                      width: MediaQuery.of(context).size.width * 0.35),
+                  const SizedBox(height: 20),
                   Text(
-                    "or",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.grey[700]),
+                    "Let's you in",
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
-                  const SizedBox(width: 20),
-                  const Expanded(child: Divider())
-                ],
-              ),
-              const SizedBox(height: 25),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return AuthScreen(
-                        isLogged: true,
-                      );
-                    }),
-                  );
-                },
-                child: const Text(
-                  "Sign in with password",
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Colors.grey),
+                  const SizedBox(height: 20),
+                  CustomOutlinedButton(
+                      width: double.maxFinite,
+                      children: [
+                        const Icon(FontAwesomeIcons.facebook,
+                            color: Colors.blue, size: 25),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Continue with Facebook",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                      onPressed: () async {
+                        await AuthService.signInWithFacebook();
+                      }),
+                  const SizedBox(height: 15),
+                  CustomOutlinedButton(
+                      width: double.maxFinite,
+                      children: [
+                        // const Icon(FontAwesomeIcons.google, color: Colors.red),
+                        SvgPicture.asset('assets/icons/google.svg', width: 25),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Continue with Google",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        )
+                      ],
+                      onPressed: () async {
+                        await AuthService.signInWithGoogle();
+                      }),
+                  const SizedBox(height: 25),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Divider(
+                          height: 1,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Text(
+                        "or",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.grey[700]),
+                      ),
+                      const SizedBox(width: 20),
+                      const Expanded(child: Divider())
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: () {
+                  const SizedBox(height: 25),
+                  ElevatedButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return AuthScreen();
+                          return AuthScreen(
+                            isLogged: true,
+                          );
                         }),
                       );
                     },
-                    child: Text(
-                      "Sign up",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(fontWeight: FontWeight.bold),
+                    child: const Text(
+                      "Sign in with password",
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return AuthScreen();
+                            }),
+                          );
+                        },
+                        child: Text(
+                          "Sign up",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

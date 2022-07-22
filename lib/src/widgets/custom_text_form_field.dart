@@ -7,6 +7,10 @@ class CustomTextFormField extends StatefulWidget {
   final void Function(String)? onChanged;
   final bool obscureText;
   final void Function()? onPressedSuffixIcon;
+  final void Function(String?)? onSaved;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final TextEditingController? controller;
   const CustomTextFormField(
       {Key? key,
       this.hintText,
@@ -14,7 +18,11 @@ class CustomTextFormField extends StatefulWidget {
       this.suffixIcon,
       this.onChanged,
       this.obscureText = false,
-      this.onPressedSuffixIcon})
+      this.keyboardType = TextInputType.text,
+      this.onSaved,
+      this.validator,
+      this.onPressedSuffixIcon,
+      this.controller})
       : super(key: key);
 
   @override
@@ -27,7 +35,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     if (widget.onChanged != null) {
       widget.onChanged!(value);
     }
-    if (value == '') {
+    if (value.trim() == '') {
       setState(() {
         _isTyping = false;
       });
@@ -41,13 +49,20 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: const BorderRadius.all(Radius.circular(15)),
       child: TextFormField(
+        controller: widget.controller,
+        validator: widget.validator,
+        onSaved: widget.onSaved,
+        keyboardType: widget.keyboardType,
         onChanged: onChangedValue,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(20),
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.black),
+              borderRadius: BorderRadius.circular(15)),
+          errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.red),
               borderRadius: BorderRadius.circular(15)),
           filled: true,
           border: InputBorder.none,
