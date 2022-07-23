@@ -61,6 +61,24 @@ class MyApp extends StatelessWidget {
                 MaterialStateProperty.all(const Size(double.infinity, 65)),
           ),
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: InputBorder.none,
+          filled: true,
+          enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.red),
+              borderRadius: BorderRadius.circular(15)),
+          contentPadding: const EdgeInsets.all(20),
+          hintStyle:
+              const TextStyle(color: Colors.grey, fontWeight: FontWeight.w400),
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.black, selectionColor: Colors.grey[400]),
       ),
       home:
           !showHome ? const OnboardingScreen() : AuthService.handleAuthState(),

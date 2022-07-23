@@ -31,19 +31,21 @@ class CustomTextFormField extends StatefulWidget {
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   bool _isTyping = false;
-  void onChangedValue(String value) {
-    if (widget.onChanged != null) {
-      widget.onChanged!(value);
-    }
-    if (value.trim() == '') {
-      setState(() {
-        _isTyping = false;
+
+  @override
+  void initState() {
+    if (widget.controller != null) {
+      widget.controller!.addListener(() {
+        setState(() {
+          if (widget.controller!.text.trim() == '') {
+            _isTyping = false;
+          } else {
+            _isTyping = true;
+          }
+        });
       });
-    } else {
-      setState(() {
-        _isTyping = true;
-      });
     }
+    super.initState();
   }
 
   @override
@@ -55,17 +57,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         validator: widget.validator,
         onSaved: widget.onSaved,
         keyboardType: widget.keyboardType,
-        onChanged: onChangedValue,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(20),
-          focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(15)),
-          errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.red),
-              borderRadius: BorderRadius.circular(15)),
-          filled: true,
-          border: InputBorder.none,
+          hintText: widget.hintText,
           prefixIcon: Icon(
             widget.prefixIcon,
             color: _isTyping ? Colors.black : Colors.grey,
@@ -73,15 +67,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           suffixIcon: IconButton(
             icon: Icon(
               widget.suffixIcon,
-              color: _isTyping ? Colors.black : Colors.grey,
             ),
             onPressed: widget.onPressedSuffixIcon,
           ),
-          hintStyle:
-              const TextStyle(color: Colors.grey, fontWeight: FontWeight.w400),
         ),
         obscureText: widget.obscureText,
-        cursorColor: Colors.black,
         cursorHeight: 20,
       ),
     );

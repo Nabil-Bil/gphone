@@ -55,24 +55,23 @@ class AuthService {
     await FirebaseAuth.instance.signOut();
   }
 
-  static Future<void> signInWithCredential(
+  static Future<UserCredential> signUpWithCredential(
       String email, String password) async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseException {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.trim(), password: password.trim());
+      return signInWithCredential(email, password);
+    } on FirebaseAuthException {
       rethrow;
     }
   }
 
-  static Future<void> signUpWithCredential(
+  static Future<UserCredential> signInWithCredential(
       String email, String password) async {
     try {
-      UserCredential credantials = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: email.trim(), password: password.trim());
-      signInWithCredential(email, password);
-    } on FirebaseAuthException {
+      return FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseException {
       rethrow;
     }
   }

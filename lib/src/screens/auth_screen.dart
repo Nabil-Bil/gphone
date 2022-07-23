@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,23 +17,47 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  bool _isHidden = true;
-  late bool _isLogin;
+  final bool _isHidden = true;
   bool _isActive = false;
+  late bool _isLogin;
+
+  final TextEditingController emailConroller = TextEditingController();
+  final TextEditingController passwordConroller = TextEditingController();
+
   final Map<String, String> _userData = {
     "email": '',
     "password": '',
   };
 
-  final emailConroller = TextEditingController();
-  final passwordConroller = TextEditingController();
+  void activateButton() {
+    setState(() {
+      if (emailConroller.text == '' || passwordConroller.text == '') {
+        _isActive = false;
+      } else {
+        _isActive = true;
+      }
+    });
+  }
+
   @override
   void initState() {
     _isLogin = widget.isLogged;
+
+    emailConroller.addListener(() {
+      _userData['email'] = emailConroller.text.trim();
+      activateButton();
+    });
+
+    passwordConroller.addListener(() {
+      _userData['password'] = emailConroller.text.trim();
+
+      activateButton();
+    });
     super.initState();
   }
 
   final _formKey = GlobalKey<FormState>();
+
   Future<void> authenticate() async {
     final bool isValid = _formKey.currentState!.validate();
     if (isValid) {
@@ -49,8 +74,29 @@ class _AuthScreenState extends State<AuthScreen> {
           return;
         }
         Navigator.pop(context);
-      } catch (e) {}
+      } on FirebaseAuthException catch (e) {
+        String messsage = e.message?.toUpperCase() ?? "Something is wrong";
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+              label: 'Hide',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              }),
+          content: Text(messsage),
+          backgroundColor: Colors.black,
+        ));
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    emailConroller.dispose();
+    passwordConroller.dispose();
+    super.dispose();
   }
 
   @override
@@ -81,7 +127,13 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: Column(
                       children: [
                         CustomTextFormField(
+                          controller: emailConroller,
                           keyboardType: TextInputType.emailAddress,
+                          prefixIcon: Icons.email,
+                          hintText: 'Email',
+                          onChanged: (value) {
+                            _userData['email'] = value.trim();
+                          },
                           validator: (value) {
                             Validator validator = Validator(validators: [
                               RequiredValidator(),
@@ -91,22 +143,16 @@ class _AuthScreenState extends State<AuthScreen> {
                             return validator.validate(
                                 context: context, label: 'Email', value: value);
                           },
-                          hintText: 'Email',
-                          prefixIcon: Icons.email,
-                          onChanged: (value) {
-                            _userData['email'] = value.trim();
-                            setState(() {
-                              if (_userData['password'] == '' ||
-                                  _userData['email'] == '') {
-                                _isActive = false;
-                              } else {
-                                _isActive = true;
-                              }
-                            });
-                          },
                         ),
                         const SizedBox(height: 15),
                         CustomTextFormField(
+                          onChanged: (value) {
+                            _userData['password'] = value.trim();
+                          },
+                          controller: passwordConroller,
+                          keyboardType: TextInputType.text,
+                          prefixIcon: Icons.lock,
+                          hintText: 'Password',
                           validator: (value) {
                             Validator validator = Validator(validators: [
                               RequiredValidator(),
@@ -117,28 +163,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                 context: context,
                                 label: 'Password',
                                 value: value);
-                          },
-                          hintText: 'Password',
-                          prefixIcon: Icons.lock,
-                          suffixIcon: !_isHidden
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          obscureText: _isHidden,
-                          onPressedSuffixIcon: () {
-                            setState(() {
-                              _isHidden = !_isHidden;
-                            });
-                          },
-                          onChanged: (value) {
-                            _userData['password'] = value.trim();
-                            setState(() {
-                              if (_userData['password'] == '' ||
-                                  _userData['email'] == '') {
-                                _isActive = false;
-                              } else {
-                                _isActive = true;
-                              }
-                            });
                           },
                         ),
                         const SizedBox(height: 15),
@@ -229,7 +253,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                 setState(() {
                                   _formKey.currentState!.reset();
                                   _formKey.currentState!.activate();
-
                                   _isLogin = !_isLogin;
                                   emailConroller.text = '';
                                   passwordConroller.text = '';
