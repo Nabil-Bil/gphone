@@ -79,6 +79,14 @@ class MyApp extends StatelessWidget {
         ),
         textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.black, selectionColor: Colors.grey[400]),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.grey,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
       ),
       home:
           !showHome ? const OnboardingScreen() : AuthService.handleAuthState(),

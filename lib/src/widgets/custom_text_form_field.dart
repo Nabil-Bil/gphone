@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatefulWidget {
   final String? hintText;
   final IconData? prefixIcon;
-  final IconData? suffixIcon;
+  final Widget? suffixIcon;
   final void Function(String)? onChanged;
   final bool obscureText;
-  final void Function()? onPressedSuffixIcon;
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -21,7 +20,6 @@ class CustomTextFormField extends StatefulWidget {
       this.keyboardType = TextInputType.text,
       this.onSaved,
       this.validator,
-      this.onPressedSuffixIcon,
       this.controller})
       : super(key: key);
 
@@ -59,18 +57,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         keyboardType: widget.keyboardType,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          hintText: widget.hintText,
-          prefixIcon: Icon(
-            widget.prefixIcon,
-            color: _isTyping ? Colors.black : Colors.grey,
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(
-              widget.suffixIcon,
+            hintText: widget.hintText,
+            prefixIcon: Icon(
+              widget.prefixIcon,
+              color: _isTyping ? Colors.black : Colors.grey,
             ),
-            onPressed: widget.onPressedSuffixIcon,
-          ),
-        ),
+            suffixIcon: widget.suffixIcon),
         obscureText: widget.obscureText,
         cursorHeight: 20,
       ),

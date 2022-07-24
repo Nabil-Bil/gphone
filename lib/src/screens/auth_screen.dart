@@ -17,7 +17,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final bool _isHidden = true;
+  bool _isHidden = true;
   bool _isActive = false;
   late bool _isLogin;
 
@@ -164,6 +164,24 @@ class _AuthScreenState extends State<AuthScreen> {
                                 label: 'Password',
                                 value: value);
                           },
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isHidden
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: passwordConroller.text.trim() != ''
+                                  ? Colors.black
+                                  : Colors.grey,
+                            ),
+                            onPressed: passwordConroller.text.trim() != ''
+                                ? () {
+                                    setState(() {
+                                      _isHidden = !_isHidden;
+                                    });
+                                  }
+                                : null,
+                          ),
+                          obscureText: _isHidden,
                         ),
                         const SizedBox(height: 15),
                         ElevatedButton(
@@ -173,20 +191,6 @@ class _AuthScreenState extends State<AuthScreen> {
                               : const Text("Sign Up"),
                         ),
                         const SizedBox(height: 15),
-                        _isLogin
-                            ? GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  'Forgot the password?',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                              )
-                            : Container(),
                         const SizedBox(height: 20),
                         Row(
                           children: [

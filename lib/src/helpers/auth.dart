@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gphone/src/screens/auth_choice_screen.dart';
-import 'package:gphone/src/screens/home_screen.dart';
+import 'package:gphone/src/screens/main_screen.dart';
 
 class AuthService {
   static Widget handleAuthState() {
     return StreamBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return const HomeScreen();
+          return const MainScreen();
         } else {
           return const AuthChoiceScreen();
         }
@@ -70,7 +70,11 @@ class AuthService {
       String email, String password) async {
     try {
       return FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        value.user!.updateDisplayName("Hello");
+        return value;
+      });
     } on FirebaseException {
       rethrow;
     }
