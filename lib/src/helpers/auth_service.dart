@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gphone/src/screens/auth_choice_screen.dart';
 import 'package:gphone/src/screens/main_screen.dart';
+import 'package:path/path.dart' as path;
 
 class AuthService {
   static Widget handleAuthState() {
@@ -60,7 +64,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.trim(), password: password.trim());
-      return signInWithCredential(email, password);
+      return await signInWithCredential(email, password);
     } on FirebaseAuthException {
       rethrow;
     }
@@ -72,11 +76,29 @@ class AuthService {
       return FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) {
-        value.user!.updateDisplayName("Hello");
         return value;
       });
     } on FirebaseException {
       rethrow;
     }
+  }
+
+  static Future<void> updateProfilePicture(File file) async {
+    String fileName =
+        "${DateTime.now().toIso8601String()}${FirebaseAuth.instance.currentUser!.uid}${path.extension(file.path)}";
+
+    final Reference ref =
+        FirebaseStorage.instance.ref().child("profilePictures/$fileName");
+    UploadTask uploadTask = ref.putFile(file);
+    await uploadTask.whenComplete(() => null);
+    if (FirebaseAuth.instance.currentUser!.photoURL != null) {
+      try {
+        FirebaseStorage.instance
+            .refFromURL(FirebaseAuth.instance.currentUser!.photoURL!)
+            .delete();
+      } catch (e) {}
+    }
+    final imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+    return await FirebaseAuth.instance.currentUser!.updatePhotoURL(imageUrl);
   }
 }

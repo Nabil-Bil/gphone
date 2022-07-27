@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gphone/src/screens/cart_screen.dart';
 import 'package:gphone/src/screens/home_screen.dart';
+import 'package:gphone/src/screens/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     const CartScreen(),
     const CartScreen(),
     const CartScreen(),
-    const CartScreen(),
+    const ProfileScreen(),
   ];
   int _currentIndex = 0;
 

@@ -37,12 +37,19 @@ dependencies:
   google_fonts: ^3.0.1
   font_awesome_flutter: ^10.1.0
   flutter_svg: ^1.1.1+1
-  firebase_core: ^1.19.2
-  firebase_auth: ^3.5.0
-  google_sign_in: ^5.4.0
-  flutter_facebook_auth: ^4.4.0+1
   shared_preferences: ^2.0.15
   form_validation: ^2.1.0+10
+  image_cropper: ^2.0.3
+  image_picker: ^0.8.5+3
+  path: ^1.8.1
+
+
+  firebase_core: ^1.20.0
+  firebase_auth: ^3.5.0
+  cloud_firestore: ^3.4.1
+  firebase_storage: ^10.3.4
+  google_sign_in: ^5.4.0
+  flutter_facebook_auth: ^4.4.0+1
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +78,6 @@ flutter:
     - assets/icons/
     - assets/illustrations/
     - assets/images/
-    - data/data.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

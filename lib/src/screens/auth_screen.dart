@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_validation/form_validation.dart';
-import 'package:gphone/src/helpers/auth.dart';
+import 'package:gphone/src/helpers/auth_service.dart';
 import 'package:gphone/src/widgets/custom_outlined_button.dart';
 import 'package:gphone/src/widgets/custom_text_form_field.dart';
 

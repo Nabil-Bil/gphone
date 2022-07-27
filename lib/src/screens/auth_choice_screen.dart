@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gphone/src/helpers/auth.dart';
+import 'package:gphone/src/helpers/auth_service.dart';
 import 'package:gphone/src/screens/auth_screen.dart';
 import 'package:gphone/src/widgets/custom_outlined_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
