@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gphone/src/helpers/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gphone/src/screens/auth_screen.dart';
+import 'package:gphone/src/screens/favorites_list_screen.dart';
 import 'package:gphone/src/screens/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -115,6 +116,7 @@ class MyApp extends StatelessWidget {
           !showHome ? const OnboardingScreen() : AuthService.handleAuthState(),
       routes: {
         AuthScreen.routeName: (context) => AuthScreen(),
+        FavoriteListScreen.routeName: (context) => const FavoriteListScreen()
       },
     );
   }

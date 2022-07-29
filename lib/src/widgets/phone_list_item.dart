@@ -30,6 +30,9 @@ class PhoneListItem extends StatelessWidget {
             .doc(id)
             .snapshots(),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container();
+          }
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -54,7 +57,11 @@ class PhoneListItem extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    PhoneService.addToFavorite(id);
+                    if (snapshot.data!.data() == null) {
+                      PhoneService.addToFavorite(id);
+                    } else {
+                      PhoneService.removeFromFavorite(id);
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.all(5),
@@ -63,7 +70,7 @@ class PhoneListItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Icon(
-                      snapshot.data != null
+                      snapshot.data!.data() != null
                           ? FontAwesomeIcons.solidHeart
                           : FontAwesomeIcons.heart,
                       color: Colors.white,
@@ -97,14 +104,12 @@ class PhoneListItem extends StatelessWidget {
                     color: Colors.black,
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                   ),
-                  Container(
-                    child: Text(
-                      "\$${price.toStringAsFixed(2)}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
+                  Text(
+                    "\$${price.toStringAsFixed(2)}",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
                   )
                 ],
               )

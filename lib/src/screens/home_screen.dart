@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gphone/src/screens/favorites_list_screen.dart';
 import 'package:gphone/src/widgets/custom_text_form_field.dart';
+import 'package:gphone/src/widgets/no_data.dart';
 
-import '../models/phone.dart';
 import '../widgets/phone_list.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Phone> _phoneDataList = [];
+  final List<String> _phoneDataList = [];
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -68,13 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(FontAwesomeIcons.bell),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(FavoriteListScreen.routeName);
+              },
               icon: const Icon(FontAwesomeIcons.heart),
             ),
           ],
         ),
-        body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            future: FirebaseFirestore.instance.collection('/phones').get(),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream:
+                FirebaseFirestore.instance.collection('/phones').snapshots(),
             builder: (BuildContext context, snaphot) {
               if (snaphot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -84,33 +87,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
               final data = snaphot.data!.docs;
               for (var phone in data) {
-                final phoneData = phone.data();
-                _phoneDataList.add(Phone(
-                  id: phone.id,
-                  name: phoneData['name'],
-                  imageUrl: phoneData['imageUrl'],
-                  rate:
-                      double.parse(phoneData['description']['rate'].toString()),
-                  price: double.parse(
-                      phoneData['description']['price'].toString()),
-                ));
+                _phoneDataList.add(phone.id);
               }
               return _phoneDataList.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/illustrations/noData.svg",
-                            height: MediaQuery.of(context).size.height / 3,
-                          ),
-                          const SizedBox(height: 25),
-                          Text("No Phone Found",
-                              style: Theme.of(context).textTheme.displaySmall),
-                        ],
-                      ),
+                  ? const NoData(
+                      illustrationPath: "assets/illustrations/noData.svg",
+                      text: "No Phone Found",
                     )
                   : RefreshIndicator(
+                      color: Colors.black,
                       onRefresh: () {
                         setState(() {});
                         return Future.delayed(Duration.zero);
