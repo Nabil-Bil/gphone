@@ -21,6 +21,7 @@ Future _connectToFirebaseEmulator() async {
       host: "$localHostString:8080",
       sslEnabled: false,
       persistenceEnabled: true);
+
   FirebaseAuth.instance.useAuthEmulator(localHostString, 9099);
 }
 
