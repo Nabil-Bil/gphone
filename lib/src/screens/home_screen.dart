@@ -64,10 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-            ),
-            IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(FavoriteListScreen.routeName);
               },
