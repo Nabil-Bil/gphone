@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gphone/src/models/order.dart';
+import 'package:gphone/src/screens/main_screen.dart';
 import 'package:gphone/src/widgets/cart_item.dart';
 import 'package:gphone/src/widgets/no_data.dart';
 
@@ -70,6 +72,7 @@ class _CartScreenState extends State<CartScreen> {
                             key: ValueKey(snapshot.data!.docs[index].id),
                             cartItem: Cart(
                               id: snapshot.data!.docs[index].id,
+                              name: snapshot.data!.docs[index]['name'],
                               price: snapshot.data!.docs[index]['price'],
                               quantity: snapshot.data!.docs[index]['quantity'],
                             ),
@@ -110,7 +113,52 @@ class _CartScreenState extends State<CartScreen> {
                         Expanded(
                           flex: 5,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final List<String> productsId = [];
+                              final List<Map<String, dynamic>> products = [];
+                              for (QueryDocumentSnapshot<
+                                      Map<String, dynamic>> cart
+                                  in snapshot.data!.docs) {
+                                productsId.add(cart.id);
+                                products.add({
+                                  "name": cart['name'],
+                                  "price": cart['price'],
+                                  "quantity": cart['quantity'],
+                                });
+                              }
+
+                              Order order = Order(
+                                  amount: totalPrice,
+                                  dateTime: Timestamp.now(),
+                                  products: productsId);
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .collection("orders")
+                                  .add({
+                                "amount": order.amount,
+                                "dateTime": order.dateTime,
+                                "products": products
+                              });
+                              for (String productId in productsId) {
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .collection("cart")
+                                    .doc(productId)
+                                    .delete();
+                              }
+                              if (mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return const MainScreen(index: 2);
+                                    },
+                                  ),
+                                );
+                              }
+                            },
                             icon: const Text(
                               "Continue to Payment",
                               style: TextStyle(fontSize: 14),

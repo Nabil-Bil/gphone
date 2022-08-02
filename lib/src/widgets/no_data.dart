@@ -20,7 +20,9 @@ class NoData extends StatelessWidget {
           const SizedBox(height: 25),
           text == null
               ? Container()
-              : Text(text!, style: Theme.of(context).textTheme.displaySmall),
+              : Text(text!,
+                  style: Theme.of(context).textTheme.headline5,
+                  textAlign: TextAlign.center),
         ],
       ),
     );

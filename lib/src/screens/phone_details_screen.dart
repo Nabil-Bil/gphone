@@ -164,6 +164,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                           AddToCart(
                             price: phone.price,
                             id: phone.id,
+                            name: phone.name,
                           )
                         ],
                       ),
@@ -215,8 +216,10 @@ class DescriptionItem extends StatelessWidget {
 class AddToCart extends StatefulWidget {
   final double price;
   final String id;
+  final String name;
 
-  const AddToCart({Key? key, required this.price, required this.id})
+  const AddToCart(
+      {Key? key, required this.price, required this.id, required this.name})
       : super(key: key);
 
   @override
@@ -315,10 +318,14 @@ class _AddToCartState extends State<AddToCart> {
                   onPressed: () async {
                     await PhoneService.addToCart(
                       Cart(
-                          id: widget.id, price: totalPrice, quantity: quantity),
+                          id: widget.id,
+                          price: totalPrice,
+                          quantity: quantity,
+                          name: widget.name),
                     );
                     if (!mounted) return;
-                    Navigator.of(context).push(
+                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: ((context) {
                           return const MainScreen(

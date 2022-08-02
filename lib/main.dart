@@ -1,39 +1,28 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gphone/src/helpers/auth_service.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:gphone/src/helpers/firebase_service.dart';
 import 'package:gphone/src/screens/auth_screen.dart';
 import 'package:gphone/src/screens/favorites_list_screen.dart';
+import 'package:gphone/src/screens/help_center.dart';
 import 'package:gphone/src/screens/onboarding_screen.dart';
 import 'package:gphone/src/screens/phone_details_screen.dart';
+import 'package:gphone/src/screens/privacy_policy_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'firebase_options.dart';
 
 // ignore: constant_identifier_names
-const bool USE_EMULATOR = false;
-
-Future _connectToFirebaseEmulator() async {
-  final localHostString = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-  FirebaseFirestore.instance.settings = Settings(
-      host: "$localHostString:8080",
-      sslEnabled: false,
-      persistenceEnabled: true);
-
-  FirebaseAuth.instance.useAuthEmulator(localHostString, 9099);
-}
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
-  if (USE_EMULATOR) _connectToFirebaseEmulator();
+
+  await FirebaseService.initFirebase();
+
   final perfs = await SharedPreferences.getInstance();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   bool showHome = perfs.getBool('showHome') ?? false;
+
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(MyApp(
     showHome: showHome,
@@ -132,6 +121,8 @@ class MyApp extends StatelessWidget {
         AuthScreen.routeName: (context) => AuthScreen(),
         FavoriteListScreen.routeName: (context) => const FavoriteListScreen(),
         PhoneDetailScreen.routeName: (context) => const PhoneDetailScreen(),
+        PrivacyPolicyScreen.routeName: (context) => const PrivacyPolicyScreen(),
+        HelpCenterScreen.routeName: (context) => const HelpCenterScreen(),
       },
     );
   }

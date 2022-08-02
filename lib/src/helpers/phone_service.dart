@@ -28,7 +28,7 @@ class PhoneService {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("cart")
         .doc(cartItem.id)
-        .set({"price": cartItem.price, "quantity": cartItem.quantity});
+        .set({"price": cartItem.price, "quantity": cartItem.quantity,"name":cartItem.name});
   }
 
   static Future<void> removeFromCart(String id) async {

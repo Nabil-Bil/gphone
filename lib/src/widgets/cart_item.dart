@@ -132,6 +132,7 @@ class _CartItemState extends State<CartItem> {
                                                     widget.cartItem.quantity -
                                                         1;
                                                 Cart newCart = Cart(
+                                                  name: widget.cartItem.name,
                                                     id: widget.cartItem.id,
                                                     quantity: newQuantity,
                                                     price: (newQuantity *
@@ -159,6 +160,7 @@ class _CartItemState extends State<CartItem> {
                                                   widget.cartItem.quantity + 1;
                                               Cart newCart = Cart(
                                                   id: widget.cartItem.id,
+                                                  name: widget.cartItem.name,
                                                   quantity: newQuantity,
                                                   price: (newQuantity *
                                                           phone['description']

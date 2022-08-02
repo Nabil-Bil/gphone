@@ -4,9 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gphone/src/helpers/auth_service.dart';
+import 'package:gphone/src/screens/help_center.dart';
+import 'package:gphone/src/screens/privacy_policy_screen.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -52,36 +53,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "trailing": const Icon(Icons.arrow_forward_ios_rounded),
       },
       {
-        "leading": Icons.payment,
-        "title": "Payment",
-        "trailing": const Icon(Icons.arrow_forward_ios_rounded),
-      },
-      {
-        "leading": Icons.security_outlined,
-        "title": "Security",
-        "trailing": const Icon(Icons.arrow_forward_ios_rounded),
-      },
-      {
-        "leading": Icons.visibility,
-        "title": "Dark Mode",
-        'trailing': Switch(
-          activeColor: Colors.black,
-          onChanged: (newValue) {
-            setState(() {
-              toggleDarkMode = newValue;
-            });
-          },
-          value: toggleDarkMode,
-        )
-      },
-      {
         "leading": FontAwesomeIcons.lock,
         "title": "Privay Policy",
         "trailing": const Icon(Icons.arrow_forward_ios_rounded),
+        "onTap": () {
+          Navigator.pushNamed(context, PrivacyPolicyScreen.routeName);
+
+        },
       },
       {
         "leading": Icons.help_center_outlined,
         "title": "Help Center",
+        "onTap": () {
+          Navigator.pushNamed(context, HelpCenterScreen.routeName);
+        },
         "trailing": const Icon(Icons.arrow_forward_ios_rounded),
       },
       {
