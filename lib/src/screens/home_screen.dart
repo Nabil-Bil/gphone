@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gphone/src/screens/favorites_list_screen.dart';
-import 'package:gphone/src/widgets/custom_text_form_field.dart';
 import 'package:gphone/src/widgets/no_data.dart';
 
 import '../widgets/phone_list.dart';
@@ -17,30 +16,31 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> _phoneDataList = [];
-  final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
-          leading: FittedBox(
-            child: Row(
-              children: [
-                const SizedBox(width: 10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(9999),
-                  child: FirebaseAuth.instance.currentUser!.photoURL == null
-                      ? CircleAvatar(
-                          child: Text(
-                              FirebaseAuth.instance.currentUser!.displayName ??
-                                  'U'),
-                        )
-                      : Image.network(
-                          FirebaseAuth.instance.currentUser!.photoURL ?? '',
-                        ),
-                ),
-              ],
+          leading: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: FittedBox(
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(9999),
+                    child: FirebaseAuth.instance.currentUser!.photoURL == null
+                        ? CircleAvatar(
+                            child: Text(FirebaseAuth
+                                    .instance.currentUser!.displayName ??
+                                'U'),
+                          )
+                        : Image.network(
+                            FirebaseAuth.instance.currentUser!.photoURL ?? '',
+                          ),
+                  ),
+                ],
+              ),
             ),
           ),
           title: Column(
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
 
-              final data = snaphot.data!.docs;
+              final data = snaphot.requireData.docs;
               for (var phone in data) {
                 _phoneDataList.add(phone.id);
               }
@@ -100,21 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(15),
                           child: SizedBox(
-                            child: Column(children: [
-                              CustomTextFormField(
-                                prefixIcon: FontAwesomeIcons.magnifyingGlass,
-                                suffixIcon: const IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.sliders,
-                                      color: Colors.black,
-                                    ),
-                                    onPressed: null),
-                                controller: _controller,
-                              ),
-                              PhoneList(
-                                data: _phoneDataList,
-                              )
-                            ]),
+                            child: PhoneList(
+                              data: _phoneDataList,
+                              allData: true,
+                            ),
                           ),
                         ),
                       ),

@@ -20,6 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _isHidden = true;
   bool _isActive = false;
   late bool _isLogin;
+  bool _isLoading = false;
 
   final TextEditingController emailConroller = TextEditingController();
   final TextEditingController passwordConroller = TextEditingController();
@@ -59,6 +60,9 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> authenticate() async {
+    setState(() {
+      _isLoading = true;
+    });
     final bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
@@ -88,6 +92,10 @@ class _AuthScreenState extends State<AuthScreen> {
           content: Text(messsage),
           backgroundColor: Colors.black,
         ));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -185,10 +193,31 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         const SizedBox(height: 15),
                         ElevatedButton(
-                          onPressed: _isActive ? authenticate : null,
-                          child: _isLogin
-                              ? const Text('Sign in')
-                              : const Text("Sign Up"),
+                          onPressed: _isActive
+                              ? (_isLoading ? null : authenticate)
+                              : null,
+                          child: Builder(builder: (context) {
+                            Widget widget = _isLogin
+                                ? const Text('Sign in')
+                                : const Text("Sign Up");
+                            if (_isLoading) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  widget,
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              );
+                            }
+                            return widget;
+                          }),
                         ),
                         const SizedBox(height: 15),
                         const SizedBox(height: 20),

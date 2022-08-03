@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -100,5 +101,27 @@ class AuthService {
     }
     final imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
     return await FirebaseAuth.instance.currentUser!.updatePhotoURL(imageUrl);
+  }
+
+  static Future<void> updateUserInfo(Map<String, dynamic> userInfo) async {
+    try {
+      final auth = FirebaseAuth.instance.currentUser!;
+      if (userInfo['fullName'].trim() != auth.displayName) {
+        await auth.updateDisplayName(userInfo['fullName'].trim());
+      }
+      if (userInfo['email'].trim() != auth.email) {
+        await auth.updateEmail(userInfo['email'].trim());
+      }
+      if (userInfo['password'].trim() != "") {
+        await auth.updatePassword(userInfo['password'].trim());
+      }
+      if (userInfo['birthday'] != null) {
+        await FirebaseFirestore.instance.collection("users").doc(auth.uid).set({
+          "birthday": Timestamp.fromDate(userInfo['birthday']),
+        });
+      }
+    } catch (_) {
+      rethrow;
+    }
   }
 }

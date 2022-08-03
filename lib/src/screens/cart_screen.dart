@@ -19,7 +19,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final ScrollController _scrollController = ScrollController();
-
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,52 +113,62 @@ class _CartScreenState extends State<CartScreen> {
                         Expanded(
                           flex: 5,
                           child: ElevatedButton.icon(
-                            onPressed: () async {
-                              final List<String> productsId = [];
-                              final List<Map<String, dynamic>> products = [];
-                              for (QueryDocumentSnapshot<
-                                      Map<String, dynamic>> cart
-                                  in snapshot.data!.docs) {
-                                productsId.add(cart.id);
-                                products.add({
-                                  "name": cart['name'],
-                                  "price": cart['price'],
-                                  "quantity": cart['quantity'],
-                                });
-                              }
-
-                              Order order = Order(
-                                  amount: totalPrice,
-                                  dateTime: Timestamp.now(),
-                                  products: productsId);
-                              await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .collection("orders")
-                                  .add({
-                                "amount": order.amount,
-                                "dateTime": order.dateTime,
-                                "products": products
-                              });
-                              for (String productId in productsId) {
-                                await FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .collection("cart")
-                                    .doc(productId)
-                                    .delete();
-                              }
-                              if (mounted) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return const MainScreen(index: 2);
-                                    },
-                                  ),
-                                );
-                              }
-                            },
+                            onPressed: _isLoading
+                                ? null
+                                : () async {
+                                    final List<String> productsId = [];
+                                    final List<Map<String, dynamic>> products =
+                                        [];
+                                    for (QueryDocumentSnapshot<
+                                            Map<String, dynamic>> cart
+                                        in snapshot.data!.docs) {
+                                      productsId.add(cart.id);
+                                      products.add({
+                                        "name": cart['name'],
+                                        "price": cart['price'],
+                                        "quantity": cart['quantity'],
+                                      });
+                                    }
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    Order order = Order(
+                                        amount: totalPrice,
+                                        dateTime: Timestamp.now(),
+                                        products: productsId);
+                                    await FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                        .collection("orders")
+                                        .add({
+                                      "amount": order.amount,
+                                      "dateTime": order.dateTime,
+                                      "products": products
+                                    });
+                                    for (String productId in productsId) {
+                                      await FirebaseFirestore.instance
+                                          .collection("users")
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser!.uid)
+                                          .collection("cart")
+                                          .doc(productId)
+                                          .delete();
+                                    }
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                    if (mounted) {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return const MainScreen(index: 2);
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  },
                             icon: const Text(
                               "Continue to Payment",
                               style: TextStyle(fontSize: 14),

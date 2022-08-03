@@ -235,6 +235,8 @@ class _AddToCartState extends State<AddToCart> {
     super.initState();
   }
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -315,30 +317,52 @@ class _AddToCartState extends State<AddToCart> {
               Expanded(
                 flex: 4,
                 child: ElevatedButton.icon(
-                  onPressed: () async {
-                    await PhoneService.addToCart(
-                      Cart(
-                          id: widget.id,
-                          price: totalPrice,
-                          quantity: quantity,
-                          name: widget.name),
-                    );
-                    if (!mounted) return;
-                    Navigator.pop(context);
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: ((context) {
-                          return const MainScreen(
-                            index: 1,
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          await PhoneService.addToCart(
+                            Cart(
+                                id: widget.id,
+                                price: totalPrice,
+                                quantity: quantity,
+                                name: widget.name),
                           );
-                        }),
-                      ),
-                    );
-                  },
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          if (!mounted) return;
+                          Navigator.pop(context);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: ((context) {
+                                return const MainScreen(
+                                  index: 1,
+                                );
+                              }),
+                            ),
+                          );
+                        },
                   icon: const Icon(FontAwesomeIcons.bagShopping),
-                  label: const Text(
-                    "Add to Cart",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Add to Cart",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      _isLoading
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: CircularProgressIndicator(
+                                  color: Colors.white),
+                            )
+                          : Container()
+                    ],
                   ),
                 ),
               )

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:expandable/expandable.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class OrderItemTile extends StatefulWidget {
@@ -24,6 +25,7 @@ class _OrderItemTileState extends State<OrderItemTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
       margin: const EdgeInsets.all(8),
       surfaceTintColor: Colors.white,
       child: Padding(
@@ -47,6 +49,11 @@ class _OrderItemTileState extends State<OrderItemTile> {
               ),
             ]),
             collapsed: Container(),
+            theme: const ExpandableThemeData(
+                useInkWell: false,
+                collapseIcon: FontAwesomeIcons.caretUp,
+                expandIcon: FontAwesomeIcons.caretDown,
+                iconColor: Colors.black),
             expanded: Column(
               children: [
                 ...widget.products

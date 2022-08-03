@@ -4,10 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gphone/src/helpers/auth_service.dart';
+import 'package:gphone/src/screens/edit_profile_screen.dart';
 import 'package:gphone/src/screens/help_center.dart';
 import 'package:gphone/src/screens/privacy_policy_screen.dart';
+import 'package:gphone/src/widgets/profile_picture.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -16,34 +19,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late bool toggleDarkMode = false;
-  Future<void> updateProfilePicture() async {
-    final ImagePicker imagePicker = ImagePicker();
-    XFile? pickedImage = await imagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
-    if (pickedImage == null) {
-      return;
-    }
-    CroppedFile? croppedImage = await ImageCropper.platform
-        .cropImage(sourcePath: pickedImage.path, aspectRatioPresets: [
-      CropAspectRatioPreset.square
-    ], uiSettings: [
-      AndroidUiSettings(
-        backgroundColor: Colors.black,
-        toolbarColor: Colors.black,
-        toolbarWidgetColor: Colors.white,
-        lockAspectRatio: true,
-        hideBottomControls: true,
-      )
-    ]);
-    if (croppedImage == null) {
-      return;
-    }
-
-    await AuthService.updateProfilePicture(File(croppedImage.path));
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> profileSettings = [
@@ -51,6 +26,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "leading": FontAwesomeIcons.user,
         "title": "Edit Profile",
         "trailing": const Icon(Icons.arrow_forward_ios_rounded),
+        "onTap": () {
+          Navigator.pushNamed(context, EditProfileScreen.routeName);
+        }
       },
       {
         "leading": FontAwesomeIcons.lock,
@@ -58,7 +36,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "trailing": const Icon(Icons.arrow_forward_ios_rounded),
         "onTap": () {
           Navigator.pushNamed(context, PrivacyPolicyScreen.routeName);
-
         },
       },
       {
@@ -83,42 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: Column(
           children: [
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                FirebaseAuth.instance.currentUser!.photoURL == null
-                    ? CircleAvatar(
-                        minRadius: MediaQuery.of(context).size.width / 8,
-                        maxRadius: MediaQuery.of(context).size.width / 8,
-                        child: Text(
-                          FirebaseAuth.instance.currentUser!.displayName ?? 'U',
-                          style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width / 16),
-                        ),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(9999),
-                        child: Image.network(
-                          FirebaseAuth.instance.currentUser!.photoURL ?? '',
-                          width: MediaQuery.of(context).size.width / 4,
-                        ),
-                      ),
-                GestureDetector(
-                  onTap: updateProfilePicture,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: Colors.black),
-                    child: const Icon(
-                      FontAwesomeIcons.pen,
-                      size: 15,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
+            const ProfilePicture(),
             const SizedBox(height: 5),
             Text(
               FirebaseAuth.instance.currentUser!.displayName ?? 'Unknown',

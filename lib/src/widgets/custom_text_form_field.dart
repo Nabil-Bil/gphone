@@ -10,6 +10,10 @@ class CustomTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
+  final bool enabled;
+  final bool readOnly;
+  final Function()? onTap;
+
   const CustomTextFormField(
       {Key? key,
       this.hintText,
@@ -20,7 +24,10 @@ class CustomTextFormField extends StatefulWidget {
       this.keyboardType = TextInputType.text,
       this.onSaved,
       this.validator,
-      this.controller})
+      this.controller,
+      this.enabled = true,
+      this.onTap,
+      this.readOnly = false})
       : super(key: key);
 
   @override
@@ -33,7 +40,14 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   void initState() {
     if (widget.controller != null) {
+      if (widget.controller!.text.trim() == '') {
+        _isTyping = false;
+      } else {
+        _isTyping = true;
+      }
       widget.controller!.addListener(() {
+        print(widget.controller);
+
         setState(() {
           if (widget.controller!.text.trim() == '') {
             _isTyping = false;
@@ -43,7 +57,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         });
       });
     }
-    super.initState();
   }
 
   @override
@@ -51,12 +64,15 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(15)),
       child: TextFormField(
+        readOnly: widget.readOnly,
+        onTap: widget.onTap,
         controller: widget.controller,
         validator: widget.validator,
         onSaved: widget.onSaved,
         keyboardType: widget.keyboardType,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
+            enabled: widget.enabled,
             hintText: widget.hintText,
             prefixIcon: Icon(
               widget.prefixIcon,

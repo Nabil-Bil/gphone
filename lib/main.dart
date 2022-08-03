@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gphone/src/helpers/auth_service.dart';
 import 'package:gphone/src/helpers/firebase_service.dart';
 import 'package:gphone/src/screens/auth_screen.dart';
+import 'package:gphone/src/screens/edit_profile_screen.dart';
 import 'package:gphone/src/screens/favorites_list_screen.dart';
 import 'package:gphone/src/screens/help_center.dart';
 import 'package:gphone/src/screens/onboarding_screen.dart';
@@ -20,7 +21,6 @@ void main(List<String> args) async {
 
   final perfs = await SharedPreferences.getInstance();
   bool showHome = perfs.getBool('showHome') ?? false;
-
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -46,7 +46,11 @@ class MyApp extends StatelessWidget {
       title: "GPhone",
       theme: ThemeData(
         useMaterial3: true,
-        textTheme: GoogleFonts.urbanistTextTheme(),
+        textTheme: GoogleFonts.urbanistTextTheme().copyWith(
+          titleLarge: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: GoogleFonts.urbanist().fontFamily),
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             elevation: MaterialStateProperty.all(6),
@@ -114,6 +118,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        primaryIconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
       ),
       home:
           !showHome ? const OnboardingScreen() : AuthService.handleAuthState(),
@@ -123,6 +130,7 @@ class MyApp extends StatelessWidget {
         PhoneDetailScreen.routeName: (context) => const PhoneDetailScreen(),
         PrivacyPolicyScreen.routeName: (context) => const PrivacyPolicyScreen(),
         HelpCenterScreen.routeName: (context) => const HelpCenterScreen(),
+        EditProfileScreen.routeName: (context) => const EditProfileScreen(),
       },
     );
   }

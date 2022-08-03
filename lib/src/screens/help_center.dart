@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gphone/src/widgets/contact_us.dart';
+import 'package:gphone/src/widgets/faq.dart';
 
 class HelpCenterScreen extends StatefulWidget {
   static const String routeName = "/help-center";
@@ -28,7 +29,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             ],
           ),
         ),
-        body: const TabBarView(children: [Center(), ContactUs()]),
+        body: const TabBarView(children: [Faq(), ContactUs()]),
       ),
     );
   }
